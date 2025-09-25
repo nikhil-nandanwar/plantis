@@ -1,21 +1,49 @@
-# Expo Router and Tailwind CSS
+# Plantis 🌱
 
-Use [Expo Router](https://docs.expo.dev/router/introduction/) with [Nativewind](https://www.nativewind.dev/v4/overview/) styling.
+A React Native mobile application for plant health analysis using AI-powered leaf disease detection.
 
-## Launch your own
+## Features
 
-[![Launch with Expo](https://github.com/expo/examples/blob/master/.gh-assets/launch.svg?raw=true)](https://launch.expo.dev/?github=https://github.com/expo/examples/tree/master/with-tailwindcss)
+- **Plant Health Scanner**: Upload leaf images via camera or gallery
+- **AI Analysis**: Get instant classification results (healthy/diseased)
+- **Care Tips**: Receive personalized plant care recommendations
+- **Scan History**: View and manage your previous plant scans
+- **Nature-Inspired UI**: Clean, green-themed interface with friendly messaging
 
-## 🚀 How to use
+## Tech Stack
 
-```sh
-npx create-expo-app -e with-tailwindcss
-```
+- **React Native** with Expo
+- **Tailwind CSS** (NativeWind) for styling
+- **TypeScript** for type safety
+- **Expo Camera** & **Image Picker** for media access
+- **AsyncStorage** for local data persistence
 
-## Deploy
+## Getting Started
 
-Deploy on all platforms with Expo Application Services (EAS).
+1. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-- Deploy the website: `npx eas-cli deploy` — [Learn more](https://docs.expo.dev/eas/hosting/get-started/)
-- Deploy on iOS and Android using: `npx eas-cli build` — [Learn more](https://expo.dev/eas)
-# plantis
+2. Start the development server:
+   ```bash
+   npm start
+   ```
+
+3. Scan the QR code with Expo Go on your device
+
+## API Integration
+
+The app expects a backend API endpoint at `/analyze` that accepts:
+- **Method**: POST
+- **Content-Type**: multipart/form-data
+- **Body**: image file
+- **Response**: JSON `{ "status": "healthy" | "diseased", "confidence": number }`
+
+## Screenshots
+
+[Add screenshots here when available]
+
+## License
+
+MIT
