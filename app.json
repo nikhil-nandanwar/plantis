@@ -2,6 +2,7 @@
   "scheme": "acme",
   "userInterfaceStyle": "automatic",
   "orientation": "default",
+  "icon": "./assets/icon.png",
   "web": {
     "output": "static"
   },

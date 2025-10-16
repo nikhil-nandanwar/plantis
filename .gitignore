@@ -36,3 +36,7 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+CODE_STRUCTURE.md
+REDESIGN_COMPLETE.md
+REDESIGN_SUMMARY.md
+STRUCTURE_VISUAL.md

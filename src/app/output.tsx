@@ -1,122 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView, ActivityIndicator } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-interface ScanResult {
-  status: 'healthy' | 'diseased';
-  confidence: number;
-  disease?: string;
-  recommendations?: string[];
-}
-
-interface ScanHistory {
-  id: string;
-  date: string;
-  status: 'healthy' | 'diseased';
-  confidence: number;
-  imageUri: string;
-  disease?: string;
-  recommendations?: string[];
-}
+import { usePlantAnalysis } from '../hooks/usePlantAnalysis';
+import PageHeader from '../components/ui/PageHeader';
 
 export default function Output() {
   const router = useRouter();
   const { imageUri } = useLocalSearchParams<{ imageUri: string }>();
-  const [result, setResult] = useState<ScanResult | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(true);
+  const { result, isAnalyzing, analyzeImage } = usePlantAnalysis();
 
   useEffect(() => {
     if (imageUri) {
-      analyzeImage();
+      analyzeImage(imageUri);
     }
   }, [imageUri]);
 
-  const analyzeImage = async () => {
-    setIsAnalyzing(true);
-
-    try {
-      // Simulate AI analysis with mock data
-      // In a real app, you would call your AI service here
-      await new Promise(resolve => setTimeout(resolve, 3000)); // Simulate API delay
-
-      const mockResult: ScanResult = {
-        status: Math.random() > 0.6 ? 'healthy' : 'diseased',
-        confidence: Math.random() * 0.3 + 0.7, // 0.7 to 1.0
-      };
-
-      // Add disease and recommendations if diseased
-      if (mockResult.status === 'diseased') {
-        const diseases = ['Leaf Spot', 'Powdery Mildew', 'Bacterial Blight', 'Rust Disease', 'Anthracnose'];
-        mockResult.disease = diseases[Math.floor(Math.random() * diseases.length)];
-        mockResult.recommendations = [
-          'Remove affected leaves immediately',
-          'Improve air circulation around the plant',
-          'Avoid watering the leaves directly',
-          'Apply appropriate fungicide treatment',
-          'Monitor plant closely for 1-2 weeks'
-        ];
-      } else {
-        mockResult.recommendations = [
-          'Your plant looks healthy! Keep up the good work',
-          'Continue regular watering schedule',
-          'Ensure adequate sunlight exposure',
-          'Check for pests regularly',
-          'Consider fertilizing during growing season'
-        ];
-      }
-
-      setResult(mockResult);
-
-      // Save to history
-      const scanHistory: ScanHistory = {
-        id: Date.now().toString(),
-        date: new Date().toISOString(),
-        status: mockResult.status,
-        confidence: mockResult.confidence,
-        imageUri: imageUri,
-        disease: mockResult.disease,
-        recommendations: mockResult.recommendations
-      };
-
-      const existingHistory = await AsyncStorage.getItem('scanHistory');
-      const history = existingHistory ? JSON.parse(existingHistory) : [];
-      history.unshift(scanHistory);
-      await AsyncStorage.setItem('scanHistory', JSON.stringify(history));
-
-    } catch (error) {
-      console.error('Analysis failed:', error);
-      // Handle error - could show error state
-    } finally {
-      setIsAnalyzing(false);
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    return status === 'healthy' ? 'text-green-600' : 'text-red-600';
-  };
-
-  const getStatusBgColor = (status: string) => {
-    return status === 'healthy' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200';
-  };
-
-  const getStatusIcon = (status: string) => {
-    return status === 'healthy' ? '✅' : '⚠️';
-  };
-
   return (
     <ScrollView className="flex-1 bg-green-50">
-      {/* Header */}
-      <View className="bg-green-600 pt-12 pb-6 px-6 rounded-b-3xl">
-        <TouchableOpacity 
-          onPress={() => router.back()}
-          className="absolute left-6 top-12 z-10"
-        >
-          <Text className="text-white text-2xl">←</Text>
-        </TouchableOpacity>
-        <Text className="text-3xl font-bold text-white text-center">🔍 Analysis Results</Text>
-        <Text className="text-white text-center mt-2 opacity-90">Plant Health Report</Text>
-      </View>
+      <PageHeader 
+        icon="🔍"
+        title="Analysis Results"
+        subtitle="Plant Health Report"
+        showBack
+      />
 
       <View className="px-6 pt-6">
         {/* Image Display */}
@@ -149,10 +55,14 @@ export default function Output() {
         {result && !isAnalyzing && (
           <>
             {/* Status Card */}
-            <View className={`rounded-2xl p-6 mb-6 shadow-sm border-2 ${getStatusBgColor(result.status)}`}>
+            <View className={`rounded-2xl p-6 mb-6 shadow-sm border-2 ${
+              result.status === 'healthy' ? 'bg-green-50 border-green-200' : 'bg-red-50 border-red-200'
+            }`}>
               <View className="items-center mb-4">
-                <Text className="text-4xl mb-2">{getStatusIcon(result.status)}</Text>
-                <Text className={`text-2xl font-bold ${getStatusColor(result.status)}`}>
+                <Text className="text-4xl mb-2">{result.status === 'healthy' ? '✅' : '⚠️'}</Text>
+                <Text className={`text-2xl font-bold ${
+                  result.status === 'healthy' ? 'text-green-600' : 'text-red-600'
+                }`}>
                   {result.status === 'healthy' ? 'Healthy Plant' : 'Issue Detected'}
                 </Text>
                 <Text className="text-lg text-gray-600 mt-1">
@@ -216,9 +126,9 @@ export default function Output() {
 
               <TouchableOpacity
                 className="bg-gray-100 px-8 py-4 rounded-full border border-gray-200"
-                onPress={() => router.push('/introduction')}
+                onPress={() => router.push('/history')}
               >
-                <Text className="text-gray-700 text-lg font-semibold text-center">Learn More</Text>
+                <Text className="text-gray-700 text-lg font-semibold text-center">View History</Text>
               </TouchableOpacity>
             </View>
           </>

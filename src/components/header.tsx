@@ -1,34 +1,17 @@
 import { Link } from "expo-router";
-import { View } from "react-native";
+import { View, Text } from "react-native";
+import React from "react";
 
 export default function Header() {
     return (
-        <View >
-            <View className="px-4 lg:px-6 h-14 flex items-center flex-row justify-between ">
-                <Link className="font-bold flex-1 items-center justify-center" href="/">
-                    ACME
-                </Link>
-                <View className="flex flex-row gap-4 sm:gap-6">
-                    <Link
-                        className="text-md font-medium hover:underline web:underline-offset-4"
-                        href="/about"
-                    >
-                        About
-                    </Link>
-                    <Link
-                        className="text-md font-medium hover:underline web:underline-offset-4"
-                        href="/products"
-                    >
-                        Products
-                    </Link>
-                    <Link
-                        className="text-md font-medium hover:underline web:underline-offset-4"
-                        href="/pricing"
-                    >
-                        Pricing
-                    </Link>
-                </View>
-            </View>
+        <View className="px-4 h-14 flex items-center flex-row justify-between bg-white border-b border-gray-200">
+            <Text className="text-lg font-bold text-green-600">🌱 Plantis</Text>
+            <Link
+                className="text-md font-medium text-green-700"
+                href="/introduction"
+            >
+                About
+            </Link>
         </View>
     );
 }
