@@ -37,6 +37,7 @@ export function useImagePicker() {
           aspect: [4, 3],
           quality: 0.8,
         });
+        console.log("image ", result);
       }
 
       if (!result.canceled) {

@@ -1,19 +1,37 @@
 {
-  "scheme": "acme",
-  "userInterfaceStyle": "automatic",
-  "orientation": "default",
-  "icon": "./assets/icon.png",
-  "web": {
-    "output": "static"
-  },
-  "plugins": [
-    [
-      "expo-router",
-      {
-        "origin": "https://n"
+  "expo": {
+    "scheme": "acme",
+    "userInterfaceStyle": "automatic",
+    "orientation": "default",
+  "icon": "./assets/plantis.jpg",
+    "web": {
+      "output": "static",
+  "favicon": "./assets/plantis.jpg"
+    },
+    "plugins": [
+      [
+        "expo-router",
+        {
+          "origin": "https://n"
+        }
+      ]
+    ],
+    "name": "Plantis",
+    "slug": "plantis",
+    "extra": {
+      "eas": {
+        "projectId": "6601e695-acfb-4299-b168-c0824c59ba05"
       }
-    ]
-  ],
-  "name": "Plantis",
-  "slug": "plantis"
+    },
+    "android": {
+      "package": "app.plantis",
+      "adaptiveIcon": {
+  "foregroundImage": "./assets/plantis.jpg",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "ios": {
+      "icon": "./assets/plantis.jpg"
+    }
+  }
 }
