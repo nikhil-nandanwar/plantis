@@ -4,14 +4,51 @@ import { useRouter } from 'expo-router';
 import { useImagePicker } from '../hooks/useImagePicker';
 import PageHeader from '../components/ui/PageHeader';
 import PhotoTips from '../components/ui/PhotoTips';
+import axios from 'axios';
 
 export default function Input() {
   const router = useRouter();
   const { pickImage, isLoading } = useImagePicker();
 
+  const handleCall = async (link: string, uri: string) => {
+    try {
+      const formData = new FormData();
+
+      if (uri.startsWith("blob:")) {
+        // For web: convert blob URL to actual Blob
+        const blob = await fetch(uri).then(res => res.blob());
+        formData.append("image", blob, "image.jpg");
+      } else {
+        // For mobile (Android/iOS): send file directly
+        formData.append("image", {
+          uri,
+          name: "image.jpg",
+          type: "image/jpeg",
+        } as any);
+      }
+
+      const response = await axios.post(link, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log("✅ Server response:", response.data);
+
+      router.push({
+        pathname: '/output',
+        params: { result: JSON.stringify(response.data) },
+      })
+    } catch (err) {
+      console.error("❌ handleCall input.tsx", err);
+    }
+  };
+
+
   const handleImagePick = async (fromCamera: boolean) => {
     const uri = await pickImage(fromCamera);
     if (uri) {
+      handleCall("http://192.168.249.157:5000/predict", uri);
       router.push({
         pathname: '/output',
         params: { imageUri: uri }
@@ -21,7 +58,7 @@ export default function Input() {
 
   return (
     <ScrollView className="flex-1 bg-green-50">
-      <PageHeader 
+      <PageHeader
         icon="🌱"
         title="Plant Scanner"
         subtitle="Upload Your Plant Image"
@@ -94,7 +131,7 @@ export default function Input() {
         {isLoading && (
           <View className="items-center bg-white rounded-2xl p-6 shadow-sm">
             <ActivityIndicator size="large" color="#16a34a" />
-            <Text className="text-gray-600 mt-3 text-center">Processing image...</Text>
+            <Text className="text-graty-600 mt-3 text-center">Processing image...</Text>
             <Text className="text-gray-500 text-sm mt-1 text-center">This may take a few seconds</Text>
           </View>
         )}
